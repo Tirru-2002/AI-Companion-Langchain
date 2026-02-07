@@ -1,7 +1,9 @@
 streamlit
 langchain
+langchain-core
 langchain-community
-langchain-ollama
-vllm
-PyPDF2
+langchain-ollama  # pip install -U langchain-ollama
 faiss-cpu
+pypdf
+pytesseract
+pillow
