@@ -1,9 +1,11 @@
 streamlit
-langchain
-langchain-core
-langchain-community
+langchain == 0.3.25
+langchain-core == 0.3.59
+langchain-community == 0.3.24
 langchain-ollama  # pip install -U langchain-ollama
 faiss-cpu
 pypdf
 pytesseract
 pillow
+rank-bm25
+langchain-experimental
