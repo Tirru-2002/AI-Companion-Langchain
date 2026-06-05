@@ -9,6 +9,7 @@ Key Features:
 - 👁️ Image Analysis: Analyzes uploaded images (e.g., code screenshots) and incorporates them into responses.
 - 📚 RAG Document Retrieval: Retrieves and integrates relevant context from uploaded documents (PDFs or text files) to enhance response accuracy.
 - ⚡ vLLM Acceleration: Uses vLLM for high-performance inference with models like gemma3:4b when handling uploads, enabling faster processing and summarization.
+- 🧠 There are three distinct types to understand, each operating at a different layer of the stack: KV caching, Prefix caching, Semantic caching
 
 ---
 
