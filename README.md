@@ -69,6 +69,8 @@ streamlit run LocalLLM.py
 
 ## 📊 RAG Evaluation with `ragas.py`
 
+<img width="1074" height="589" alt="Screenshot 2026-07-28 162041" src="ragas_UI.png" />
+
 The project now includes **`ragas.py`**, a standalone evaluation module designed to measure the quality of the Retrieval-Augmented Generation (RAG) pipeline. It enables developers to quantitatively assess how well the language model answers questions using information retrieved from uploaded documents.
 
 Unlike `langchain_project.py`, which focuses on document ingestion, retrieval, and response generation, `ragas.py` evaluates the performance of that pipeline using industry-standard **RAGAS** metrics.
