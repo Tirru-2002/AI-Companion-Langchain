@@ -110,6 +110,7 @@ This makes it easier to improve the overall quality and reliability of the RAG a
 
 ### Evaluation Workflow
 
+~ Note: create .env file and insert your api key, then edit question and ground_truth as per document
 1. Upload one or more PDF or TXT documents.
 2. Documents are split into chunks.
 3. Chunks are embedded using Google's embedding model.
