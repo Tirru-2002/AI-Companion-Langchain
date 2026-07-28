@@ -1,0 +1,13 @@
+streamlit
+langchain-core>=0.3.71
+langchain>=0.3.27
+langchain-community<=0.4.2
+langchain-ollama>=0.3.6
+langchain-google-genai
+langchain-text-splitters
+ragas=0.3.9
+datasets
+faiss-cpu
+pypdf
+nest_asyncio
+langchain-experimental
