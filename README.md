@@ -67,15 +67,119 @@ curl http://localhost:8000/v1/models
 streamlit run LocalLLM.py
 ```
 
-### Key Explanations:
+## 📊 RAG Evaluation with `ragas.py`
 
-1. **Installation Instructions**: Clear steps on installing **Ollama** and setting up the Python environment.
-2. **Purpose of the Code**: A detailed description of the features such as debugging, code documentation, and solution design.
-3. **Usage Instructions**: How to run the app and interact with the chatbot.
-4. **Example Chat**: Illustrative example of how the chatbot helps with coding queries.
-5. **Customizing the Chatbot**: Brief explanation on customizing the chatbot's behavior.
+The project now includes **`ragas.py`**, a standalone evaluation module designed to measure the quality of the Retrieval-Augmented Generation (RAG) pipeline. It enables developers to quantitatively assess how well the language model answers questions using information retrieved from uploaded documents.
 
-This README will provide a user-friendly guide to installing and using the DeepSeek Code Companion.
+Unlike `langchain_project.py`, which focuses on document ingestion, retrieval, and response generation, `ragas.py` evaluates the performance of that pipeline using industry-standard **RAGAS** metrics.
+
+### Purpose
+
+`ragas.py` helps validate whether the RAG system is:
+
+- Producing factually correct answers.
+- Retrieving the most relevant document chunks.
+- Grounding responses in the retrieved context.
+- Identifying weak retrieval or hallucination issues.
+- Comparing different embedding models, chunk sizes, retrieval settings, or LLMs.
+
+This makes it easier to improve the overall quality and reliability of the RAG application.
+
+### Features
+
+- 📈 Automatic evaluation of RAG responses using **RAGAS**.
+- 📚 Supports uploaded **PDF** and **TXT** documents.
+- 🤖 Uses **Google Gemini** as the evaluation LLM.
+- 🔍 Retrieves relevant document chunks through the existing FAISS vector database.
+- 📝 Evaluates predefined Question–Answer (Ground Truth) pairs.
+- 🎯 Allows evaluation of individual user questions against predefined ground truths.
+- 📊 Displays detailed evaluation reports inside Streamlit.
+- 📉 Computes average scores across all evaluated questions.
+
+### RAGAS Metrics Used
+
+| Metric | Description |
+|---------|-------------|
+| **Answer Correctness** | Measures how accurately the generated answer matches the reference (ground truth). |
+| **Answer Relevancy** | Evaluates whether the answer is relevant to the user's question. |
+| **Faithfulness** | Checks whether the answer is supported by the retrieved context and avoids hallucinations. |
+| **Context Precision** | Measures how much of the retrieved context is actually useful for answering the question. |
+| **Context Recall** | Measures whether the retrieval step successfully retrieved all necessary information required to answer the question. |
+
+### Evaluation Workflow
+
+1. Upload one or more PDF or TXT documents.
+2. Documents are split into chunks.
+3. Chunks are embedded using Google's embedding model.
+4. FAISS indexes the document embeddings.
+5. Relevant chunks are retrieved for each predefined question.
+6. Gemini generates an answer using only the retrieved context.
+7. RAGAS compares:
+   - User Question
+   - Retrieved Context
+   - Generated Response
+   - Ground Truth
+8. Individual metric scores and overall averages are displayed in a Streamlit report.
+
+### Relationship with `langchain_project.py`
+
+| `langchain_project.py` | `ragas.py` |
+|-------------------------|------------|
+| Builds the RAG chatbot | Evaluates the RAG chatbot |
+| Loads and indexes documents | Uses the indexed documents |
+| Retrieves relevant context | Evaluates retrieval quality |
+| Generates answers | Scores generated answers |
+| Supports user interaction | Measures overall RAG performance |
+
+### Running the Evaluation
+
+Launch the evaluation interface:
+
+```sh
+streamlit run ragas.py
+```
+
+### Requirements
+
+Install the required libraries:
+
+```sh
+pip install ragas datasets langchain langchain-google-genai faiss-cpu pypdf nest_asyncio
+```
+
+### Typical Use Cases
+
+- Evaluate newly added documents before deployment.
+- Compare different embedding models.
+- Tune chunk size and chunk overlap.
+- Compare retrieval strategies.
+- Benchmark different Gemini models.
+- Detect hallucinations in generated answers.
+- Measure improvements after prompt engineering.
+
+### Sample Evaluation Report
+
+Each evaluated question includes:
+
+- User Question
+- Retrieved Context
+- Generated Answer
+- Ground Truth
+- Answer Correctness
+- Answer Relevancy
+- Faithfulness
+- Context Precision
+- Context Recall
+
+An overall summary report is also generated, displaying the average score for each evaluation metric.
+
+### Benefits
+
+- Improves the reliability of the RAG pipeline.
+- Provides objective quality metrics instead of manual inspection.
+- Helps identify retrieval and generation weaknesses.
+- Supports iterative optimization of prompts, embeddings, chunking strategies, and LLM configurations.
+- Enables consistent benchmarking across different document collections and model configurations.
 
 ### Troubleshooting
 
