@@ -64,6 +64,10 @@ from ragas.llms import LangchainLLMWrapper
 from ragas.embeddings import LangchainEmbeddingsWrapper
 
 
+import string
+
+
+
 # ──────────────────────────────────────────────────────────────────────────
 # EDIT THIS: your predefined questions and their correct answers.
 # Every question must have a matching ground truth at the same position.
@@ -211,7 +215,7 @@ def load_documents(files):
 
 
 def chunk_documents(raw_docs):
-    splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+    splitter = RecursiveCharacterTextSplitter(chunk_size=300, chunk_overlap=30)
     return splitter.split_documents(raw_docs)
 
 
@@ -241,6 +245,7 @@ def extract_text(content):  # to handle different content types returned by LLMs
     if isinstance(content, str):
         return content
 
+
     if isinstance(content, list):
         texts = []
 
@@ -260,7 +265,7 @@ def extract_text(content):  # to handle different content types returned by LLMs
 
     return str(content)
 
-def generate_answer(llm, question, contexts):
+def generate_answer(llm, question, contexts): # This function takes an LLM, a question, and a list of context documents, then generates an answer based on the context.
     context_text = "\n\n---\n\n".join(contexts)
     system = SystemMessage(content=(
         "Only string output!"
@@ -283,7 +288,7 @@ def evaluate_qa_pairs(llm, embeddings, vectorstore, qa_pairs, k):
     rows = []
     for question, truth in qa_pairs:
         contexts = retrieve_context(question, vectorstore, k)
-        answer = generate_answer(llm, question, contexts)
+        answer = generate_answer(llm, question, contexts) 
         answer = extract_text(answer) # handle different content types returned by LLMs
         rows.append({
             "user_input": question,
@@ -305,17 +310,51 @@ def evaluate_qa_pairs(llm, embeddings, vectorstore, qa_pairs, k):
 # ──────────────────────────────────────────────────────────────────────────
 # FUZZY MATCH: find the closest predefined question to what the user typed
 # ──────────────────────────────────────────────────────────────────────────
-def match_predefined_question(user_question, threshold=0.55):
-    best_q, best_ratio = None, 0.0
-    for q in questions:
-        ratio = difflib.SequenceMatcher(None, user_question.lower().strip(), q.lower().strip()).ratio()
-        if ratio > best_ratio:
-            best_q, best_ratio = q, ratio
-    if best_ratio >= threshold:
-        idx = questions.index(best_q)
-        return best_q, ground_truths[idx], best_ratio
-    return None, None, best_ratio
 
+
+
+def clean(text):
+    text = text.lower()
+
+    text = text.translate(
+        str.maketrans('', '', string.punctuation)
+    )
+
+    return text.split()
+
+
+def word_similarity(user_question, question):
+
+    user_words = clean(user_question).split()
+    question_words = clean(question).split()
+
+    common = 0
+
+    for word in user_words:
+        if word in question_words:  # check if the word is in the question words
+            common += 1
+
+    return common / len(user_words)
+
+
+def match_predefined_question(user_question, threshold=0.6): # This function takes a user question and compares it to a list of predefined questions, returning the closest match and its ground truth if the similarity exceeds a threshold.
+
+    best_q = None
+    best_ratio = 0
+
+    for q in questions:
+
+        ratio = word_similarity(user_question, q)
+
+        if ratio > best_ratio:
+            best_ratio = ratio
+            best_q = q
+
+    if best_ratio >= threshold:
+        index = questions.index(best_q)
+        return best_q, ground_truths[index], best_ratio
+
+    return None, None, best_ratio
 
 # ──────────────────────────────────────────────────────────────────────────
 # MAIN UI
