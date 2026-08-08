@@ -1,4 +1,5 @@
 streamlit
+docling
 langchain == 0.3.25
 langchain-core == 0.3.59
 langchain-community == 0.3.24
